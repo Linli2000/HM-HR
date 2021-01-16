@@ -10,7 +10,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="$store.getters.staffPhoto" class="user-avatar">
+          <img :src="$store.getters.staffPhoto" class="user-avatar" @error="logError">
           <span class="name">{{ $store.getters.name }}</span>
           <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
@@ -49,6 +49,12 @@ export default {
     ])
   },
   methods: {
+    // 图片的失败
+    logError(e) {
+      console.log('图片加载失败')
+      console.log(e.target)
+      e.target.src = 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2021421053,481069477&fm=26&gp=0.jpg'
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

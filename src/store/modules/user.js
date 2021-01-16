@@ -37,8 +37,8 @@ const actions = {
     // 上一个接口问题在于数据太过简陋, 缺少了图片
     // 唯一的好处就是带有用户 id
     // 接下来需要利用这个id继续获取当前用户的其他资料
-    const detailInfo = await getUserDetailById(simpleInfo.userID)
-
+    const detailInfo = await getUserDetailById(simpleInfo.userId)
+    // 将两个接口结果合并
     const totalInfo = {
       ...simpleInfo,
       ...detailInfo
