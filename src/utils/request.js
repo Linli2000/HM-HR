@@ -4,7 +4,7 @@ import router from '@/router'
 import { getTimeStamp } from '@/utils/auth'
 import { Message } from 'element-ui' // 导入element弹窗
 
-const timeout = 3000
+const timeout = 60 * 60 * 1000
 
 // create an axios instance
 const service = axios.create({
@@ -65,10 +65,18 @@ service.interceptors.response.use(res => {
     // 这里 reject 是为了使用的时候继续可以链式调用
     return Promise.reject(new Error(message))
   }
-}, err => {
-  // 弹窗提示
-  // Message.error(err.massage)
-
+}, async err => {
+  if (err.response && err.response.data && err.response.data.code === 10002) {
+    // 有一种特殊情况, 如果 code === 10002
+    // 那么就是 token 错误, 应该执行登出逻辑
+    await store.dispatch('user/logout')
+    router.push('/login')
+    Message.error('登录失效')
+  } else {
+    console.dir(err)
+    // 提示错误
+    Message.error(err.message)
+  }
   // reject
   return Promise.reject(err)
 })
