@@ -1,6 +1,6 @@
 import { setToken, getToken } from '@/utils/auth.js'
 
-import { getUserInfo, login } from '@/api/user.js'
+import { getUserDetailById, getUserInfo, login } from '@/api/user.js'
 const state = {
   // 页面刷新获取默认值,如果没有则为空
   token: getToken(),
@@ -33,11 +33,20 @@ const actions = {
     commit('setToken', res)
   },
   async getUserInfo({ commit }) {
-    const res = await getUserInfo()
-    commit('setUserInfo', res)
+    const simpleInfo = await getUserInfo()
+    // 上一个接口问题在于数据太过简陋, 缺少了图片
+    // 唯一的好处就是带有用户 id
+    // 接下来需要利用这个id继续获取当前用户的其他资料
+    const detailInfo = await getUserDetailById(simpleInfo.userID)
+
+    const totalInfo = {
+      ...simpleInfo,
+      ...detailInfo
+    }
     // 作为数据的获取来说, 上面两部已经完成了
     // 这里有一个后面会用到的数据返回
-    return res
+    commit('setUserInfo', totalInfo)
+    return totalInfo
   }
 }
 
