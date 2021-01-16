@@ -21,7 +21,8 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+// 处理破图
+import '@/directives'
 new Vue({
   el: '#app',
   router,

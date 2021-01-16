@@ -1,4 +1,4 @@
-import { setToken, getToken } from '@/utils/auth.js'
+import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth.js'
 
 import { getUserDetailById, getUserInfo, login } from '@/api/user.js'
 const state = {
@@ -17,6 +17,11 @@ const mutations = {
     // 2.数据变化时存放到本地存储
     setToken(data)
   },
+  removeToken(state) {
+    // 删除token信息
+    state.token = ''
+    removeToken()
+  },
   setUserInfo(state, data) {
     // 存储用户信息
     state.userInfo = { ...data }
@@ -31,6 +36,7 @@ const actions = {
   async login({ commit }, data) {
     const res = await login(data)
     commit('setToken', res)
+    setTimeStamp()
   },
   async getUserInfo({ commit }) {
     const simpleInfo = await getUserInfo()
@@ -47,6 +53,12 @@ const actions = {
     // 这里有一个后面会用到的数据返回
     commit('setUserInfo', totalInfo)
     return totalInfo
+  },
+  logout({ commit }) {
+    // 清理token
+    commit('removeToken')
+    // 清理用户数据
+    commit('removeUserInfo')
   }
 }
 

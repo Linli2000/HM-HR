@@ -1,6 +1,10 @@
 import axios from 'axios'
-import { Message } from 'element-ui' // 导入element弹窗
 import store from '@/store'
+import router from '@/router'
+import { getTimeStamp } from '@/utils/auth'
+import { Message } from 'element-ui' // 导入element弹窗
+
+const timeout = 3000
 
 // create an axios instance
 const service = axios.create({
@@ -13,12 +17,27 @@ const service = axios.create({
 // 就像响应拦截器一样, 这个请求拦截器, 也可以有两个参数
 // 一个处理成功, 一个处理失败
 // 虽然我们现在没什么失败的可能性, 但是还是可以写一个回调做保险
-service.interceptors.request.use(config => {
+service.interceptors.request.use(async config => {
   // 统一实现请求 token 注入
   // 1. 判断有登陆过
   // 2. 是否已经带有 token
   if (store.getters.token && !config.headers.Authorization) {
-    config.headers.Authorization = `Bearer ${store.getters.token}`
+    // config.headers.Authorization = `Bearer ${store.getters.token}`
+    // 以上判断出是有有 token
+    // 现在要多加一个处理逻辑,判断是否过期
+    // 会封装一个函数检查是否过期, 如果返回 true 则是过期, 否则一切正常
+    if (checkTimeout()) {
+      // 过期
+      // 1. 执行退出逻辑清理数据
+      await store.dispatch('user/logout')
+      // 2. 跳转到登录页
+      router.push('/login')
+      // 3. 拦截住剩下的请求
+      Message.error('token 已超时')
+      return Promise.reject('token 已超时')
+    } else {
+      config.headers.Authorization = `Bearer ${store.getters.token}`
+    }
   }
   // 拦截判断成功后需要返回
   return config
@@ -48,9 +67,18 @@ service.interceptors.response.use(res => {
   }
 }, err => {
   // 弹窗提示
-  Message.error(err.massage)
+  // Message.error(err.massage)
+
   // reject
   return Promise.reject(err)
 })
 
 export default service
+
+// 是否超时
+// 超时逻辑 已经有token多久了 是不是大于我们设定的时间 (当前时间  - 缓存中的时间 已经存在的时间) 是否大于 时间差
+const checkTimeout = () => {
+  const loginTimeStamp = getTimeStamp()
+  const nowTimeStamp = Date.now()
+  return nowTimeStamp - loginTimeStamp > timeout
+}

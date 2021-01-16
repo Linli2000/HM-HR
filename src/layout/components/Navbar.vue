@@ -10,7 +10,10 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="$store.getters.staffPhoto" class="user-avatar" @error="logError">
+          <!-- 使用自带的方法处理破图 -->
+          <!-- <img :src="$store.getters.staffPhoto" class="user-avatar" @error="logError"> -->
+          <!-- <img v-imgerror :src="$store.getters.staffPhoto" class="user-avatar"> -->
+          <img v-imgerror="require('@/assets/common/bigUserHeader.png')" :src="$store.getters.staffPhoto" class="user-avatar">
           <span class="name">{{ $store.getters.name }}</span>
           <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
@@ -50,17 +53,18 @@ export default {
   },
   methods: {
     // 图片的失败
-    logError(e) {
-      console.log('图片加载失败')
-      console.log(e.target)
-      e.target.src = 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2021421053,481069477&fm=26&gp=0.jpg'
-    },
+    // logError(e) {
+    //   console.log('图片加载失败')
+    //   console.log(e.target)
+    //   e.target.src = 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2021421053,481069477&fm=26&gp=0.jpg'
+    // },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push('/login')
     }
   }
 }
