@@ -32,31 +32,10 @@
         </el-row>
         <!-- 以上是最上方公司信息行 -->
         <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
-          <el-row
-            slot-scope="{ data }"
-            type="flex"
-            justify="space-between"
-            align="middle"
-            style="heiht: 40px; width: 100%"
-          >
-            <el-col>
-              <span>{{ data.name }}</span>
-            </el-col>
-            <el-col :span="4">
-              <el-row type="flex" justify="end">
-                <el-col>负责人</el-col>
-                <el-col>
-                  <el-dropdown>
-                    <span>操作</span>
-                    <!-- 下拉菜单 -->
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>添加子部门</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <!-- 传入内容 插槽内容 会循环多次 有多少节点 就循环多少次 -->
+          <!-- 作用域插槽 slot-scope="obj" 接收传递给插槽的数据   data 每个节点的数据对象-->
+          <!-- tree-node 为传递数据的必传属性  在后面 treeNode 接收 -->
+          <tree-tools slot-scope="{ data }" :tree-node="data" />
         </el-tree>
       </el-card>
     </div>
@@ -64,7 +43,11 @@
 </template>
 
 <script>
+import TreeTools from './components/tree-tools'
 export default {
+  components: {
+    TreeTools
+  },
   data() {
     return {
       departs: [
