@@ -48,7 +48,7 @@ export default {
       // 根据获取的 type 三种不同处理方式即可
       if (type === 'add') {
         console.log('添加')
-        this.$emit('addDepts')
+        this.$emit('addDepts', this.treeNode)
       }
       if (type === 'edit') {
         console.log('编辑')

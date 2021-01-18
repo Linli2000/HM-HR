@@ -14,7 +14,7 @@
         </el-tree>
       </el-card>
     </div>
-    <add-dept :show-dialog="showDialog" />
+    <add-dept :show-dialog="showDialog" :tree-node="node" />
   </div>
 </template>
 
@@ -33,6 +33,7 @@ export default {
   },
   data() {
     return {
+      node: {},
       showDialog: false,
       company: { }, // 就是头部的数据结构
       departs: [],
@@ -56,8 +57,9 @@ export default {
       this.departs = tranListToTreeData(res.depts, '')
       console.log(this.departs)
     },
-    addDepts() {
-      this.showDialog = true
+    addDepts(node) {
+      this.showDialog = true,
+      this.node = node
     }
   }
 
