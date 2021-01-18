@@ -14,20 +14,26 @@
         </el-tree>
       </el-card>
     </div>
+    <add-dept :show-dialog="showDialog" />
   </div>
 </template>
 
 <script>
 import TreeTools from './components/tree-tools'
+import AddDept from './components/add-dept'
+
 import { getDepartments } from '@/api/departments'
 import { tranListToTreeData } from '@/utils'
 
 export default {
   components: {
-    TreeTools
+    TreeTools,
+    AddDept
+
   },
   data() {
     return {
+      showDialog: true,
       company: { }, // 就是头部的数据结构
       departs: [],
       defaultProps: {
