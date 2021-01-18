@@ -4,7 +4,7 @@
       <el-card class="tree-card">
         <!-- 用了一个行列布局 -->
         <!-- isRoot（是否根节点） -->
-        <tree-tools :tree-node="company" :is-root="true" />
+        <tree-tools :tree-node="company" :is-root="true" @addDepts="addDepts" />
         <!-- 以上是最上方公司信息行 -->
         <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
           <!-- 传入内容 插槽内容 会循环多次 有多少节点 就循环多少次 -->
@@ -51,14 +51,15 @@ export default {
       const res = await getDepartments()
       this.company = {
         name: res.companyName,
-        manager: '负责人'
+        manager: '负责人',
+        id: ''
       }
       // 获取数据结构
       this.departs = tranListToTreeData(res.depts, '')
       console.log(this.departs)
     },
     addDepts(node) {
-      this.showDialog = true,
+      this.showDialog = true
       this.node = node
     }
   }
