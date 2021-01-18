@@ -48,6 +48,7 @@ service.interceptors.request.use(async config => {
 })
 
 // response interceptor
+// 响应
 service.interceptors.response.use(res => {
   // 解构 res 得到 success / data / message
   const { success, data, message } = res.data
