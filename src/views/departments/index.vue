@@ -10,7 +10,7 @@
           <!-- 传入内容 插槽内容 会循环多次 有多少节点 就循环多少次 -->
           <!-- 作用域插槽 slot-scope="obj" 接收传递给插槽的数据   data 每个节点的数据对象-->
           <!-- tree-node 为传递数据的必传属性  在后面 treeNode 接收 -->
-          <tree-tools slot-scope="{ data }" :tree-node="data" />
+          <tree-tools slot-scope="{ data }" :tree-node="data" @delDepts="getDepartments" />
         </el-tree>
       </el-card>
     </div>
@@ -20,6 +20,7 @@
 <script>
 import TreeTools from './components/tree-tools'
 import { getDepartments } from '@/api/departments'
+import { tranListToTreeData } from '@/utils'
 
 export default {
   components: {
@@ -35,17 +36,22 @@ export default {
       }
     }
   },
-  async created() {
-    const res = await getDepartments()
-    console.log(res)
-    // 获取公司名数据 传智播客加粗的
-    this.company = {
-      name: res.companyName,
-      manager: '负责人'
+  created() {
+    this.getDepartments()
+  },
+  methods: {
+    async getDepartments() {
+      const res = await getDepartments()
+      this.company = {
+        name: res.companyName,
+        manager: '负责人'
+      }
+      // 获取数据结构
+      this.departs = tranListToTreeData(res.depts, '')
+      console.log(this.departs)
     }
-    // 获取数据结构
-    this.departs = res.depts
   }
+
 }
 </script>
 

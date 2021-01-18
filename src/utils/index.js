@@ -115,3 +115,23 @@ export function param2Obj(url) {
   })
   return obj
 }
+// 将组织架构数据递归处理的函数
+export function tranListToTreeData(list, currentId) {
+  const res = []
+  // 遍历寻找当前id的下级菜单
+  list.forEach(element => {
+    if (element.pid === currentId) {
+      // 每找到一个, 就递归操作, 继续往一层寻找
+      const children = tranListToTreeData(list, element.id)
+      if (children.length > 0) {
+        // 如果找到, 就放入当前 children 中
+        // 否则停止
+        element.children = children
+      }
+
+      res.push(element)
+    }
+  })
+
+  return res
+}

@@ -13,12 +13,13 @@
       <el-row type="flex" justify="end">
         <el-col>{{ treeNode.manager }}</el-col>
         <el-col>
-          <el-dropdown>
+          <el-dropdown @command="operateDepts">
             <span>操作</span>
             <!-- 下拉菜单 -->
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-if="!isRoot">编辑部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">删除部门</el-dropdown-item>
+              <el-dropdown-item command="add">添加子部门</el-dropdown-item>
+              <el-dropdown-item v-if="!isRoot" command="edit">编辑部门</el-dropdown-item>
+              <el-dropdown-item v-if="!isRoot" command="del">删除部门</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -28,6 +29,8 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departments'
+
 export default {
   props: {
     treeNode: {
@@ -37,6 +40,25 @@ export default {
     isRoot: {
       type: Boolean,
       default: false
+    }
+  },
+  methods: {
+    async operateDepts(type) {
+      // 凡是下拉菜单被点击都会触发
+      // 根据获取的 type 三种不同处理方式即可
+      if (type === 'add') {
+        console.log('添加')
+      }
+      if (type === 'edit') {
+        console.log('编辑')
+      }
+      if (type === 'del') {
+        console.log('删除')
+        // 发出请求, 删除当前被点击的栏目
+        await delDepartments(this.treeNode.id)
+        this.$emit('delDepts')
+        this.$message.success('删除部门成功')
+      }
     }
   }
 }
