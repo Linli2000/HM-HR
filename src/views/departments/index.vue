@@ -8,7 +8,11 @@
             <span>江苏传智播客教育科技股份有限公司</span>
           </el-col>
           <el-col :span="4">
-            <el-row type="flex" justify="end">
+            <el-row
+
+              type="flex"
+              justify="end"
+            >
               <!-- 两个内容 -->
               <el-col>负责人</el-col>
               <el-col>
@@ -26,6 +30,34 @@
             </el-row>
           </el-col>
         </el-row>
+        <!-- 以上是最上方公司信息行 -->
+        <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
+          <el-row
+            slot-scope="{ data }"
+            type="flex"
+            justify="space-between"
+            align="middle"
+            style="heiht: 40px; width: 100%"
+          >
+            <el-col>
+              <span>{{ data.name }}</span>
+            </el-col>
+            <el-col :span="4">
+              <el-row type="flex" justify="end">
+                <el-col>负责人</el-col>
+                <el-col>
+                  <el-dropdown>
+                    <span>操作</span>
+                    <!-- 下拉菜单 -->
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>添加子部门</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-tree>
       </el-card>
     </div>
   </div>
@@ -33,7 +65,30 @@
 
 <script>
 export default {
-
+  data() {
+    return {
+      departs: [
+        {
+          name: '总裁办',
+          children: [
+            {
+              name: '董事会'
+            }
+          ]
+        },
+        {
+          name: '行政部'
+        },
+        {
+          name: '人事部'
+        }
+      ],
+      defaultProps: {
+        label: 'name',
+        children: 'children'
+      }
+    }
+  }
 }
 </script>
 
