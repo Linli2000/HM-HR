@@ -65,6 +65,17 @@ export default {
         callback()
       }
     }
+    const checkCodeRepeat = async(rule, value, callback) => {
+      // 1. 获取所有部门数据
+      const res = await getDepartments()
+      // 2. 遍历所有部门, 如果有一个或以上的 code 跟当前用户输入的 value 相同, 则需要报错
+      const isRepeat = res.depts.some(item => item.code === value && value)
+      if (isRepeat) {
+        callback(new Error('部门编码必须是唯一值, 不能重复'))
+      } else {
+        callback()
+      }
+    }
     return {
       formData: {
         name: '',
@@ -81,7 +92,8 @@ export default {
         ],
         code: [
           { required: true, trigger: 'blur', message: '部门代码不能为空' },
-          { min: 1, max: 50, trigger: 'blur', message: '部门代码要求1到50个字符' }
+          { min: 1, max: 50, trigger: 'blur', message: '部门代码要求1到50个字符' },
+          { trigger: 'blur', validator: checkCodeRepeat }
         ],
         manager: [
           { required: true, trigger: 'blur', message: '负责人不能为空' }
