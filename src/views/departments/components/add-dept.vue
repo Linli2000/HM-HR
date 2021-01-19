@@ -1,6 +1,6 @@
 
 <template>
-  <el-dialog title="新增部门" :visible="showDialog">
+  <el-dialog title="新增部门" :visible="showDialog" @close="btnCancel">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form ref="deptForm" label-width="120px" :model="formData" :rules="rules">
@@ -24,7 +24,7 @@
       <!-- 列被分为24 -->
       <el-col :span="6">
         <el-button type="primary" size="small" @click="btnOk">确定</el-button>
-        <el-button size="small">取消</el-button>
+        <el-button size="small" @click="btnCancel">取消</el-button>
       </el-col>
     </el-row>
   </el-dialog>
@@ -136,6 +136,14 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    btnCancel() {
+      // 重置校验字段
+      // form 组件有一个方法 resetFields 可以讲所有的当前 formData 绑定的数据
+      // 和现在正在显示的错误信息全部清理掉
+      this.$refs.deptForm.resetFields()
+      // 关闭弹窗
+      this.$emit('update:showDialog', false)
     }
   }
 }
