@@ -3,7 +3,7 @@
   <el-dialog title="新增部门" :visible="showDialog">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
-    <el-form label-width="120px" :model="formData" :rules="rules">
+    <el-form ref="deptForm" label-width="120px" :model="formData" :rules="rules">
       <el-form-item label="部门名称" prop="name">
         <el-input v-model="formData.name" style="width:80%" placeholder="1-50个字符" />
       </el-form-item>
@@ -11,7 +11,9 @@
         <el-input v-model="formData.code" style="width:80%" placeholder="1-50个字符" />
       </el-form-item>
       <el-form-item label="部门负责人" prop="manager">
-        <el-select v-model="formData.manager" style="width:80%" placeholder="请选择" />
+        <el-select v-model="formData.manager" style="width:80%" placeholder="请选择" @focus="getEmployeeSimple">
+          <el-option v-for="item in peoples" :key="item.id" :label="item.username" :value="item.username" />
+        </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
         <el-input v-model="formData.introduce" style="width:80%" placeholder="1-300个字符" type="textarea" :rows="3" />
@@ -21,7 +23,7 @@
     <el-row slot="footer" type="flex" justify="center">
       <!-- 列被分为24 -->
       <el-col :span="6">
-        <el-button type="primary" size="small">确定</el-button>
+        <el-button type="primary" size="small" @click="btnOk">确定</el-button>
         <el-button size="small">取消</el-button>
       </el-col>
     </el-row>
@@ -29,7 +31,9 @@
 </template>
 
 <script>
-import { getDepartments } from '@/api/departments'
+import { addDepartments, getDepartments } from '@/api/departments'
+import { getEmployeeSimple } from '@/api/employees'
+
 export default {
   props: {
     showDialog: {
@@ -41,6 +45,7 @@ export default {
       required: true
     }
   },
+
   data() {
     const checkNameRepeat = async(rule, value, callback) => {
       // 成功 直接调用 callback()
@@ -102,6 +107,34 @@ export default {
           { required: true, trigger: 'blur', message: '介绍不能为空' },
           { min: 1, max: 300, trigger: 'blur', message: '介绍要求1到300个字符' }
         ]
+      },
+      peoples: []
+    }
+  },
+  methods: {
+    async getEmployeeSimple() {
+      this.peoples = await getEmployeeSimple()
+      //  console.log(this.peoples)
+    },
+    async btnOk() {
+      try {
+        // 1. 校验
+        await this.$refs.deptForm.validate()
+        // 2. 发请求
+        await addDepartments({ ...this.formData, pid: this.treeNode.id })
+        // 3. 更新数据
+        this.$emit('addDepts')
+        // 4. 关闭弹窗
+        // 如果在子组件内想要修改父组件传过来的 props 值
+        // 有一个固定写法
+        // this.$emit(update:props名字, 想要修改的值)
+        this.$emit('update:showDialog', false)
+
+        this.$message.success('添加成功')
+        // 3. 关闭弹窗
+        // 4. 更新数据
+      } catch (error) {
+        console.log(error)
       }
     }
   }

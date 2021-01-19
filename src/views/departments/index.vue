@@ -10,11 +10,11 @@
           <!-- 传入内容 插槽内容 会循环多次 有多少节点 就循环多少次 -->
           <!-- 作用域插槽 slot-scope="obj" 接收传递给插槽的数据   data 每个节点的数据对象-->
           <!-- tree-node 为传递数据的必传属性  在后面 treeNode 接收 -->
-          <tree-tools slot-scope="{ data }" :tree-node="data" @delDepts="getDepartments" @addDepts="addDepts" />
+          <tree-tools slot-scope="{data }" :tree-node="data" @delDepts="getDepartments" @addDepts="addDepts" />
         </el-tree>
       </el-card>
     </div>
-    <add-dept :show-dialog="showDialog" :tree-node="node" />
+    <add-dept :show-dialog.sync="showDialog" :tree-node="node" @addDepts="getDepartments" />
   </div>
 </template>
 

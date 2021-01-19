@@ -20,3 +20,4 @@ export function addDepartments(data) {
     data
   })
 }
+
