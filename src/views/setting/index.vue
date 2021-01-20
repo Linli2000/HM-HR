@@ -17,10 +17,13 @@
                     >新增角色</el-button>
                   </el-row>
                   <!-- 表格 -->
-                  <el-table border="">
-                    <el-table-column label="序号" width="120" />
-                    <el-table-column label="角色名称" width="240" />
-                    <el-table-column label="描述" />
+                  <el-table border="" :data="list">
+                    <!-- type="index"索引 从1开始 也可以作用域插槽  <template slot-scope="scope">
+                        {{ scope.$index +1 }}
+                      </template>-->
+                    <el-table-column label="序号" width="120" type="index" />
+                    <el-table-column label="角色名称" width="240" prop="name" />
+                    <el-table-column label="描述" prop="description" />
                     <el-table-column label="操作">
                       <el-button size="small" type="success">分配权限</el-button>
                       <el-button size="small" type="primary">编辑</el-button>
@@ -30,7 +33,7 @@
                   <!-- 分页组件 -->
                   <el-row type="flex" justify="center" align="middle" style="height: 60px">
                     <!-- 分页组件 -->
-                    <el-pagination layout="prev,pager,next" />
+                    <el-pagination :page-size="page.pagesize" :page-sizes="[2,5,10,20]" layout="total,sizes,prev,pager,next,jumper" :total="page.total" @current-change="currentChange" @size-change="sizeChange" />
                   </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="公司信息">
@@ -77,7 +80,14 @@ export default {
         // mailbox: '',
         // remarks: ''
       },
-      list: []
+      // 员工列表
+      list: [],
+      // 分页组件
+      page: {
+        pagesize: 10,
+        page: 1,
+        total: 0
+      }
     }
   },
   computed: {
@@ -97,8 +107,24 @@ export default {
     },
     // 获取员工信息
     async getRoleList() {
-      this.list = await getRoleList()
-      console.log(this.list)
+      const { rows, total } = await getRoleList(this.page)
+      this.list = rows
+      this.page.total = total
+      // console.log(this.list)
+    },
+    // 当前显示第几页
+    currentChange(newPage) {
+      // console.log(11)
+      // 1. 设定当前最新的请求数据(页码)
+      this.page.page = newPage
+      // 2. 重新发请求
+      this.getRoleList()
+    },
+    // 当前显示多少条
+    sizeChange(newSize) {
+      // console.log(22)
+      this.page.pagesize = newSize
+      this.getRoleList()
     }
   }
 }
