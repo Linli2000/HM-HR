@@ -23,7 +23,15 @@ Vue.use(ElementUI, { locale })
 import Component from '@/components'
 Vue.use(Component) // 注册自己的插件
 
-Vue.config.productionTip = false
+// 注册全局的过滤器
+import * as filters from '@/filters'
+// 可以通过遍历逐个注册每个过滤器
+for (const key in filters) {
+  // console.log(key) 字符串的名字
+  // console.log(filters[key]) 名字对应的函数
+  Vue.filter(key, filters[key])
+}
+
 // 处理破图
 import '@/directives'
 new Vue({

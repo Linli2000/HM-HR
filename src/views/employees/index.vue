@@ -18,18 +18,23 @@
         <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" :formatter="formatEmployment" />
         <el-table-column label="部门" sortable="" prop="departmentName" />
         <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
-        <el-table-column label="账户状态" sortable="" prop="enableState" />
-        <el-table-column label="操作" sortable="" fixed="right" width="280">
-          <template>
-            <el-button type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">转正</el-button>
-            <el-button type="text" size="small">调岗</el-button>
-            <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
-            <el-button type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <!-- 使用插槽自定义内容 -->
+        <template>
+          11
+           </template>
+          </el-table-column>
+          <el-table-column label="账户状态" sortable="" prop="enableState" />
+          <el-table-column label="操作" sortable="" fixed="right" width="280">
+            <template>
+              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small">转正</el-button>
+              <el-button type="text" size="small">调岗</el-button>
+              <el-button type="text" size="small">离职</el-button>
+              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small">删除</el-button>
+            </template>
+          </el-table-column>
+        </template></el-table>
       <!-- 分页组件 -->
       <el-row type="flex" justify="center" align="middle" style="height: 60px">
         <el-pagination layout="prev, pager, next" :total="page.total" @current-change="currentChange" />
@@ -63,7 +68,7 @@ export default {
       // 结构数据
       const { rows, total } = await getEmployeeList(this.page)
       this.list = rows
-      console.log(this.list)
+      // console.log(this.list)
       this.page.total = total
     },
     // 当用户点击翻页时会触发, 接收到用户选择的新页码
@@ -77,9 +82,10 @@ export default {
       // cellValue 可以拿到页面中的值
       // 要变成什么内容, 直接 return 即可
       // 通过find 找 枚举 hireType这个对应里面的id对应的value
+      // find() 方法获得当前元素集合中每个元素的后代
       // item就是找到对应hireType对象 然后如果等于我们的页面中看到的值 就是id和值相同就返回整个对象给obj 然后我们使用她的value属性
       const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
-      console.log(obj)
+      // console.log(obj)
       return obj.value
     }
 
