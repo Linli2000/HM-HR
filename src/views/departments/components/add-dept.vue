@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { addDepartments, getDepartments, getDepartDetail } from '@/api/departments'
+import { addDepartments, getDepartments, getDepartDetail, updateDepartments } from '@/api/departments'
 import { getEmployeeSimple } from '@/api/employees'
 
 export default {
@@ -126,10 +126,17 @@ export default {
     },
     async btnOk() {
       try {
-        // 1. 校验
-        await this.$refs.deptForm.validate()
+        if (this.formData.id) {
+          // 编辑场景
         // 2. 发请求
-        await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          await updateDepartments(this.formData)
+        } else {
+          // 新增场景
+          // 1. 校验
+          await this.$refs.deptForm.validate()
+          // 2. 发请求
+          await addDepartments({ ...this.formData, pid: this.treeNode.id })
+        }
         // 3. 更新数据
         this.$emit('addDepts')
         // 4. 关闭弹窗
@@ -138,7 +145,7 @@ export default {
         // this.$emit(update:props名字, 想要修改的值)
         this.$emit('update:showDialog', false)
 
-        this.$message.success('添加成功')
+        this.$message.success('操作成功')
         // 3. 关闭弹窗
         // 4. 更新数据
       } catch (error) {
