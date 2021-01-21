@@ -14,7 +14,8 @@
         <el-table-column label="序号" sortable="" type="index" />
         <el-table-column label="姓名" sortable="" prop="username" />
         <el-table-column label="工号" sortable="" prop="workNumber" />
-        <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" />
+        <!-- 可以使用**el-table-column**的**formatter**属性进行设置 枚举 -->
+        <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" :formatter="formatEmployment" />
         <el-table-column label="部门" sortable="" prop="departmentName" />
         <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
         <el-table-column label="账户状态" sortable="" prop="enableState" />
@@ -39,6 +40,9 @@
 
 <script>
 import { getEmployeeList } from '@/api/employees'
+// 引入枚举
+import EmployeeEnum from '@/api/constant/employees'
+
 export default {
   data() {
     return {
@@ -67,7 +71,18 @@ export default {
     currentChange(newPage) {
       this.page.page = newPage
       this.getEmployeeList()
+    },
+    // 定义聘用形式的格式化函数
+    formatEmployment(row, column, cellValue, index) {
+      // cellValue 可以拿到页面中的值
+      // 要变成什么内容, 直接 return 即可
+      // 通过find 找 枚举 hireType这个对应里面的id对应的value
+      // item就是找到对应hireType对象 然后如果等于我们的页面中看到的值 就是id和值相同就返回整个对象给obj 然后我们使用她的value属性
+      const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
+      console.log(obj)
+      return obj.value
     }
+
   }
 }
 </script>
