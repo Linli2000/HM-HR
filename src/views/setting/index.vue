@@ -14,6 +14,7 @@
                       icon="el-icon-plus"
                       size="small"
                       type="primary"
+                      @click="showDialog = true"
                     >新增角色</el-button>
                   </el-row>
                   <!-- 表格 -->
@@ -88,7 +89,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getCompanyInfo, getRoleList, deleteRole, getRoleDetail } from '@/api/setting'
+import { getCompanyInfo, getRoleList, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/setting'
 
 export default {
   data() {
@@ -175,14 +176,32 @@ export default {
       }
     },
     // 弹框的确定
-    btnOk() {},
+    async btnOK() {
+      // 点击弹框的确认时触发
+      // 校验表单
+      // 只有校验通过的情况下 才会执行await的下方内容
+      // roleForm这个对象有id就是编辑 没有id就是新增
+      if (this.roleForm.id) {
+        await this.$refs.roleForm.validate()
+        // 发送数据 修改角色 发送请求 带着新的后台需要的数据
+        await updateRole(this.roleForm)
+      } else {
+        // 新增业务
+        await addRole(this.roleForm)
+      }
+      // 3. 重新加载数据, 关闭弹窗
+      this.getRoleList()
+      this.showDialog = false
+      this.$message.success('修改成功')
+    },
     // 弹框的取消
     btnCancel() {},
     // editRole编辑功能
     async editRole(id) {
       // console.log(111)
-      // 发送api请求获取表单数据 获取角色详情
+      // 发送api请求获取表单数据 获取原始的角色详情
       this.roleForm = await getRoleDetail(id)
+      // console.log(this.roleForm)
       this.showDialog = true
     }
   }

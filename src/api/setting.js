@@ -23,7 +23,7 @@ export function deleteRole(id) {
 }
 
 //  修改角色
-export function addRole(data) {
+export function updateRole(data) {
   return request({
     url: '/sys/role',
     data,
@@ -35,5 +35,14 @@ export function addRole(data) {
 export function getRoleDetail(id) {
   return request({
     url: `/sys/role/${id}`
+  })
+}
+
+// 新增角色 上面的添加按钮
+export function addRole(data) {
+  return request({
+    url: '/sys/role',
+    data,
+    method: 'post'
   })
 }
