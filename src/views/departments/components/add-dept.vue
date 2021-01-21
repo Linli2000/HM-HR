@@ -1,6 +1,6 @@
 
 <template>
-  <el-dialog title="新增部门" :visible="showDialog" @close="btnCancel">
+  <el-dialog :title="title" :visible="showDialog" @close="btnCancel">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form ref="deptForm" label-width="120px" :model="formData" :rules="rules">
@@ -111,6 +111,11 @@ export default {
       peoples: []
     }
   },
+  computed: {
+    title() {
+      return this.formData.id ? '编辑部门' : '新增部门'
+    }
+  },
   created() {
     console.log('创建弹窗组件')
   },
@@ -141,6 +146,14 @@ export default {
       }
     },
     btnCancel() {
+      // 兼容编辑状态, 对于回显的, 非表单绑定数据进行一个清理
+      this.formData = {
+        name: '',
+        code: '',
+        manager: '',
+        introduce: ''
+      }
+
       // 重置校验字段
       // form 组件有一个方法 resetFields 可以讲所有的当前 formData 绑定的数据
       // 和现在正在显示的错误信息全部清理掉
