@@ -71,7 +71,7 @@
           <el-form-item label="角色名称" prop="name">
             <el-input v-model="roleForm.name" />
           </el-form-item>
-          <el-form-item label="角色描述">
+          <el-form-item label="角色描述" prop="description">
             <el-input v-model="roleForm.description" />
           </el-form-item>
         </el-form>
@@ -196,7 +196,17 @@ export default {
       this.$message.success('修改成功')
     },
     // 弹框的取消
-    btnCancel() {},
+    btnCancel() {
+      // 1. 清理数据恢复数据对象
+      this.roleForm = {
+        name: '',
+        description: ''
+      }
+      // 2. 清理form校验错误提醒
+      this.$refs.roleForm.resetFields()
+      // 3. 关闭弹窗
+      this.showDialog = false
+    },
     // editRole编辑功能
     async editRole(id) {
       // console.log(111)
