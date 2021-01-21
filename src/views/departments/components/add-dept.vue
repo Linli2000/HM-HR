@@ -65,11 +65,19 @@ export default {
       // 如果符合则返回 true 否则返回 false
       let isRepeat
       if (this.formData.id) {
-        // 编辑状况
-        isRepeat = res.depts.some((item) => item.id !== this.treeNode.id && item.code === value && value)
+        // 编辑
+        // 编辑时, 当前的 treeNode 其实就是被编辑的数据
+        // 1. 找到跟当前 treeNode.pid 相同的部门才是我的同级部门
+        // 2. 找的时候将自己排除在外 item.id !== treeNode.id
+        isRepeat = res.depts
+          .filter(item => item.pid === this.treeNode.pid && item.id !== this.treeNode.id)
+        // 3.查找有没有同名
+          .some(item => item.name === value)
       } else {
-        // 新建状况
-        isRepeat = res.depts.some((item) => item.code === value && value)
+        // 新增
+        isRepeat = res.depts
+          .filter((item) => item.pid === this.treeNode.id)
+          .some((item) => item.name === value)
       }
       if (isRepeat) {
         callback(new Error('同一部门下, 不能有两个同名的子部门'))
