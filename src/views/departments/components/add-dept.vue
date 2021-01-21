@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { addDepartments, getDepartments } from '@/api/departments'
+import { addDepartments, getDepartments, getDepartDetail } from '@/api/departments'
 import { getEmployeeSimple } from '@/api/employees'
 
 export default {
@@ -111,6 +111,9 @@ export default {
       peoples: []
     }
   },
+  created() {
+    console.log('创建弹窗组件')
+  },
   methods: {
     async getEmployeeSimple() {
       this.peoples = await getEmployeeSimple()
@@ -144,6 +147,10 @@ export default {
       this.$refs.deptForm.resetFields()
       // 关闭弹窗
       this.$emit('update:showDialog', false)
+    },
+    async getDepartDetail(id) {
+      console.log('需要在编辑弹起被调用')
+      this.formData = await getDepartDetail(id)
     }
   }
 }

@@ -52,6 +52,7 @@ export default {
       }
       if (type === 'edit') {
         console.log('编辑')
+        this.$emit('editDepts', this.treeNode)
       }
       if (type === 'del') {
         console.log('删除')
