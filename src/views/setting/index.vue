@@ -83,6 +83,7 @@
           </el-col>
         </el-row>
       </el-dialog>
+
     </div>
   </div>
 </template>
@@ -181,8 +182,8 @@ export default {
       // 校验表单
       // 只有校验通过的情况下 才会执行await的下方内容
       // roleForm这个对象有id就是编辑 没有id就是新增
+      await this.$refs.roleForm.validate()
       if (this.roleForm.id) {
-        await this.$refs.roleForm.validate()
         // 发送数据 修改角色 发送请求 带着新的后台需要的数据
         await updateRole(this.roleForm)
       } else {

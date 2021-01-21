@@ -25,9 +25,9 @@ export function deleteRole(id) {
 //  修改角色
 export function updateRole(data) {
   return request({
-    url: '/sys/role',
+    url: `/sys/role/${data.id}`,
     data,
-    method: 'post'
+    method: 'put'
   })
 }
 
