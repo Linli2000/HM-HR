@@ -63,7 +63,14 @@ export default {
       // 然后在这个基础上, 判断是否有同名
       // 使用 some 方法, 可以判断一个数组当中, 是否存在某些元素符合规定
       // 如果符合则返回 true 否则返回 false
-      const isRepeat = res.depts.filter(item => item.pid === this.treeNode.id).some(item => item.name === value)
+      let isRepeat
+      if (this.formData.id) {
+        // 编辑状况
+        isRepeat = res.depts.some((item) => item.id !== this.treeNode.id && item.code === value && value)
+      } else {
+        // 新建状况
+        isRepeat = res.depts.some((item) => item.code === value && value)
+      }
       if (isRepeat) {
         callback(new Error('同一部门下, 不能有两个同名的子部门'))
       } else {
@@ -126,6 +133,7 @@ export default {
     },
     async btnOk() {
       try {
+        await this.$refs.deptForm.validate()
         if (this.formData.id) {
           // 编辑场景
         // 2. 发请求
@@ -133,7 +141,6 @@ export default {
         } else {
           // 新增场景
           // 1. 校验
-          await this.$refs.deptForm.validate()
           // 2. 发请求
           await addDepartments({ ...this.formData, pid: this.treeNode.id })
         }
