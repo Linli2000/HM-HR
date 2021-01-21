@@ -25,9 +25,11 @@
                     <el-table-column label="角色名称" width="240" prop="name" />
                     <el-table-column label="描述" prop="description" />
                     <el-table-column label="操作">
-                      <el-button size="small" type="success">分配权限</el-button>
-                      <el-button size="small" type="primary">编辑</el-button>
-                      <el-button size="small" type="danger">删除</el-button>
+                      <template slot-scope="scope">
+                        <el-button size="small" type="success">分配权限</el-button>
+                        <el-button size="small" type="primary" @click="editRole(scope.row.id)">编辑</el-button>
+                        <el-button size="small" type="danger" @click="deleteRole(scope.row.id)">删除</el-button>
+                      </template>
                     </el-table-column>
                   </el-table>
                   <!-- 分页组件 -->
@@ -63,17 +65,48 @@
           </div>
         </div>
       </template>
+      <el-dialog title="编辑弹层" :visible="showDialog" @close="btnCancel">
+        <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
+          <el-form-item label="角色名称" prop="name">
+            <el-input v-model="roleForm.name" />
+          </el-form-item>
+          <el-form-item label="角色描述">
+            <el-input v-model="roleForm.description" />
+          </el-form-item>
+        </el-form>
+        <!-- 底部 -->
+        <el-row slot="footer" type="flex" justify="center">
+          <el-col :span="6">
+            <el-button size="small" @click="btnCancel">取消</el-button>
+            <el-button size="small" type="primary" @click="btnOK">确定</el-button>
+          </el-col>
+        </el-row>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getCompanyInfo, getRoleList } from '@/api/setting'
+import { getCompanyInfo, getRoleList, deleteRole, getRoleDetail } from '@/api/setting'
 
 export default {
   data() {
     return {
+      // 弹窗部分数据
+      showDialog: false,
+      roleForm: {
+        name: '',
+        description: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '角色名不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '角色描述不能为空', trigger: 'blur' }
+        ]
+      },
       formData: {
         // name: '',
         // companyAddress: '',
@@ -84,9 +117,9 @@ export default {
       list: [],
       // 分页组件
       page: {
-        pagesize: 10,
-        page: 1,
-        total: 0
+        pagesize: 5, // 每页显示的默认数据
+        page: 1, // 当前显示第几页
+        total: 0 // 总页数
       }
     }
   },
@@ -120,11 +153,37 @@ export default {
       // 2. 重新发请求
       this.getRoleList()
     },
-    // 当前显示多少条
+    // 每页显示多少条数据 下拉框那里 ()括号
     sizeChange(newSize) {
       // console.log(22)
       this.page.pagesize = newSize
       this.getRoleList()
+    },
+    // deleteRole删除角色
+    async deleteRole(id) {
+      try {
+        // 如果删除之前发现
+        // 当前页只剩下一条数据 而且还不是第一页 就加载数据的时候向前翻一页
+        // 因为list只会拿到当前页码发送的数据并不会拿到所有的数据 拿到第几页有几条 他只会根据这个
+        if (this.list.length === 1 && this.page.page > 1) {
+          this.page.page -= 1
+        }
+        await deleteRole(id) // 调用删除接口
+        this.getRoleList() // 重新加载员工信息数据
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 弹框的确定
+    btnOk() {},
+    // 弹框的取消
+    btnCancel() {},
+    // editRole编辑功能
+    async editRole(id) {
+      // console.log(111)
+      // 发送api请求获取表单数据 获取角色详情
+      this.roleForm = await getRoleDetail(id)
+      this.showDialog = true
     }
   }
 }
