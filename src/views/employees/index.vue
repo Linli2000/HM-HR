@@ -17,24 +17,28 @@
         <!-- 可以使用**el-table-column**的**formatter**属性进行设置 枚举 -->
         <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" :formatter="formatEmployment" />
         <el-table-column label="部门" sortable="" prop="departmentName" />
-        <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
-        <!-- 使用插槽自定义内容 -->
-        <template>
-          11
-           </template>
-          </el-table-column>
-          <el-table-column label="账户状态" sortable="" prop="enableState" />
-          <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template>
-              <el-button type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">转正</el-button>
-              <el-button type="text" size="small">调岗</el-button>
-              <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small">删除</el-button>
-            </template>
-          </el-table-column>
-        </template></el-table>
+        <el-table-column label="入职时间" sortable="" prop="timeOfEntry">
+          <template slot-scope="scope">
+            <!-- 管道符的使用  前面原数据格式|管道符的格式 -->
+            {{ scope.row.timeOfEntry | formatDate }}
+          </template>
+        </el-table-column>
+        <el-table-column label="账户状态" sortable="" prop="enableState">
+          <template slot-scope="scope">
+            <el-switch :value="scope.row.enableState === 1" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" sortable="" fixed="right" width="280">
+          <template>
+            <el-button type="text" size="small">查看</el-button>
+            <el-button type="text" size="small">转正</el-button>
+            <el-button type="text" size="small">调岗</el-button>
+            <el-button type="text" size="small">离职</el-button>
+            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <!-- 分页组件 -->
       <el-row type="flex" justify="center" align="middle" style="height: 60px">
         <el-pagination layout="prev, pager, next" :total="page.total" @current-change="currentChange" />
