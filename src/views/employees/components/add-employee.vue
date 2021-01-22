@@ -18,7 +18,14 @@
         <el-input v-model="formData.workNumber" style="width:50%" placeholder="请输入工号" />
       </el-form-item>
       <el-form-item label="部门" prop="departmentName">
-        <el-input v-model="formData.departmentName" style="width:50%" placeholder="请选择部门" />
+        <el-input v-model="formData.departmentName" style="width:50%" placeholder="请选择部门" @focus="getDepartments" />
+        <el-tree
+          v-if="treeData.length > 0"
+          :default-expand-all="true"
+          :data="treeData"
+          :props="{ label: 'name' }"
+          @node-click="selectNode"
+        />
       </el-form-item>
       <el-form-item label="转正时间" prop="correctionTime">
         <el-date-picker v-model="formData.correctionTime" style="width:50%" placeholder="请选择日期" />
@@ -37,6 +44,8 @@
 </template>
 
 <script>
+import { getDepartments } from '@/api/departments'
+import { tranListToTreeData } from '@/utils'
 export default {
   props: {
     showDialog: {
@@ -66,7 +75,30 @@ export default {
         workNumber: [{ required: true, message: '工号不能为空', trigger: 'blur' }],
         departmentName: [{ required: true, message: '部门不能为空', trigger: 'change' }],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
-      }
+      },
+      // 获取默认总裁办的数据 转化成树形结构
+      treeData: []
+    }
+  },
+  methods: {
+    // 获取数据 之前总裁办接口那个
+    async getDepartments() {
+      // 解构出我们需要的数据
+      const { depts } = await getDepartments()
+      // this.treeData = depts
+
+      // 用之前封装的方法转化成树形结构
+      this.treeData = tranListToTreeData(depts, '')
+      console.log(this.treeData)
+    },
+    selectNode(data) {
+      // 这里是属性组件被点击的地方
+      // 可以获取到第一个参数, 就是被点击的那个节点本身的数据对象
+      // console.log(data)
+      // 1. 将选中的数据 name 赋值给表单中部门名称的框框里面
+      this.formData.departmentName = data.name
+      // 2. 将树形结构数据清空, 使得列表隐藏起来, 反正每次点击都需要重新加载的
+      this.treeData = []
     }
   }
 }

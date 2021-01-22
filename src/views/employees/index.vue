@@ -106,7 +106,8 @@ export default {
     },
     // delEmployee删除
     async deleteEmployee(id) {
-      console.log(11) // 发送删除的请求
+      // console.log(11)
+      // 发送删除的请求
       await delEmployee(id)
       // 如果只剩下一条数据 就向前一页
       if (this.list.length === 1 && this.page.page > 1) {
