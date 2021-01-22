@@ -1,7 +1,7 @@
 <template>
-  <el-dialog title="新增员工" :visible="showDialog">
+  <el-dialog title="新增员工" :visible="showDialog" @close="btnCancel">
     <!-- 表单 -->
-    <el-form :model="formData" :rules="rules" label-width="120px">
+    <el-form ref="form" label-width="120px" :model="formData" :rules="rules">
       <el-form-item label="姓名" prop="username">
         <el-input v-model="formData.username" style="width:50%" placeholder="请输入姓名" />
       </el-form-item>
@@ -42,8 +42,8 @@
     <template v-slot:footer>
       <el-row type="flex" justify="center">
         <el-col :span="6">
-          <el-button size="small">取消</el-button>
-          <el-button type="primary" size="small">确定</el-button>
+          <el-button size="small" @click="btnCancel">取消</el-button>
+          <el-button type="primary" size="small" @click="btnOK">确定</el-button>
         </el-col>
       </el-row>
     </template>
@@ -55,6 +55,8 @@ import { getDepartments } from '@/api/departments'
 import { tranListToTreeData } from '@/utils'
 // 枚举
 import EmployeesEnum from '@/api/constant/employees'
+
+import { addEmployee } from '@/api/employees'
 
 export default {
   props: {
@@ -83,7 +85,7 @@ export default {
         mobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }, {
           pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur'
         }],
-        formOfEmployment: [{ required: true, message: '聘用形式不能为空', trigger: 'blur' }],
+        formOfEmployment: [{ required: true, message: '聘用形式不能为空', trigger: 'change' }],
         workNumber: [{ required: true, message: '工号不能为空', trigger: 'blur' }],
         departmentName: [{ required: true, message: '部门不能为空', trigger: 'change' }],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
@@ -111,6 +113,36 @@ export default {
       this.formData.departmentName = data.name
       // 2. 将树形结构数据清空, 使得列表隐藏起来, 反正每次点击都需要重新加载的
       this.treeData = []
+    },
+    // 点击弹框的确定 触发的事件
+    async btnOK() {
+      try {
+        // 校验表单
+        await this.$refs.form.validate()
+        // 发送新增的新求
+        addEmployee(this.formData)
+        this.$emit('addEmployee')
+        this.$message.success('操作成功')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 点击弹框的取消按钮
+    btnCancel() {
+      // 1. 清理表单
+      this.formData = {
+        username: '',
+        mobile: '',
+        formOfEmployment: '',
+        workNumber: '',
+        departmentName: '',
+        timeOfEntry: '',
+        correctionTime: ''
+      }
+      // 2. 清理报错
+      this.$refs.form.resetFields()
+      // 3. 关闭弹窗
+      this.$emit('update:showDialog', false)
     }
   }
 }

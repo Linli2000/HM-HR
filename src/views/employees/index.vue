@@ -1,14 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container" />
-
     <page-tools :show-before="true">
       <span slot="before">共 123 条记录</span>
       <template slot="after">
         <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
         <el-button size="small" type="danger">导出</el-button>
-        <add-employee :show-dialog="showDialog" />
-
+        <add-employee :show-dialog.sync="showDialog" @addEmployee="addEmployee" />
         <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
       </template>
     </page-tools>
@@ -117,6 +115,13 @@ export default {
       this.getEmployeeList()
       // 弹框 删除成功
       this.$message.success('删除成功')
+    },
+
+    // 子组件传递的数据
+    addEmployee() {
+      // console.log('执行函数')
+      this.getEmployeeList()
+      this.showDialog = false
     }
   }
 }

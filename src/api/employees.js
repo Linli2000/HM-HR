@@ -32,3 +32,4 @@ export function addEmployee(data) {
     data
   })
 }
+
