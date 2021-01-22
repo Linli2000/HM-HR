@@ -89,7 +89,7 @@ export default {
 
       // 用之前封装的方法转化成树形结构
       this.treeData = tranListToTreeData(depts, '')
-      console.log(this.treeData)
+      // console.log(this.treeData)
     },
     selectNode(data) {
       // 这里是属性组件被点击的地方

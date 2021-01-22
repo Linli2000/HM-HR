@@ -102,7 +102,7 @@ export default {
       // item就是找到对应hireType对象 然后如果等于我们的页面中看到的值 就是id和值相同就返回整个对象给obj 然后我们使用她的value属性
       const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
       // console.log(obj)
-      return obj.value
+      return obj ? obj.value : '不知道啊'
     },
     // delEmployee删除
     async deleteEmployee(id) {
