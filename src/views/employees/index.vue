@@ -6,6 +6,7 @@
       <template slot="after">
         <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
         <el-button size="small" type="danger">导出</el-button>
+        <!--sync是接收子组件update这个方法改值不用写函数接收  -->
         <add-employee :show-dialog.sync="showDialog" @addEmployee="addEmployee" />
         <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
       </template>
