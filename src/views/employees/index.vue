@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container" />
+    <add-employee :show-dialog="showDialog" />
+
     <page-tools :show-before="true">
       <span slot="before">共 123 条记录</span>
       <template slot="after">
@@ -29,13 +31,13 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" sortable="" fixed="right" width="280">
-          <template>
+          <template slot-scope="scope">
             <el-button type="text" size="small">查看</el-button>
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
             <el-button type="text" size="small">角色</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="deleteEmployee(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -48,13 +50,20 @@
 </template>
 
 <script>
-import { getEmployeeList } from '@/api/employees'
+import { getEmployeeList, delEmployee } from '@/api/employees'
 // 引入枚举
 import EmployeeEnum from '@/api/constant/employees'
+// 引入封装的弹框
+import AddEmployee from './components/add-employee'
 
 export default {
+  components: {
+    AddEmployee
+  },
   data() {
     return {
+      // 弹框的判断展示
+      showDialog: true,
       // 接收数据
       list: [],
       page: {
@@ -68,6 +77,7 @@ export default {
     this.getEmployeeList()
   },
   methods: {
+    // 获取原始数据
     async getEmployeeList() {
       // 结构数据
       const { rows, total } = await getEmployeeList(this.page)
@@ -91,8 +101,20 @@ export default {
       const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
       // console.log(obj)
       return obj.value
+    },
+    // delEmployee删除
+    async deleteEmployee(id) {
+      console.log(11) // 发送删除的请求
+      await delEmployee(id)
+      // 如果只剩下一条数据 就向前一页
+      if (this.list.length === 1 && this.page.page > 1) {
+        this.page.page -= 1
+      }
+      // 重新获取请求页面
+      this.getEmployeeList()
+      // 弹框 删除成功
+      this.$message.success('删除成功')
     }
-
   }
 }
 </script>

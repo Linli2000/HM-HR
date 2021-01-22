@@ -161,7 +161,7 @@ export default {
       this.page.pagesize = newSize
       this.getRoleList()
     },
-    // deleteRole删除角色
+    // deleteRole删除角色方法
     async deleteRole(id) {
       try {
         // 如果删除之前发现
