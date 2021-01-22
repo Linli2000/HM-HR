@@ -1,14 +1,15 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container" />
-    <add-employee :show-dialog="showDialog" />
 
     <page-tools :show-before="true">
       <span slot="before">共 123 条记录</span>
       <template slot="after">
         <el-button size="small" type="warning">导入</el-button>
         <el-button size="small" type="danger">导出</el-button>
-        <el-button size="small" type="primary">新增员工</el-button>
+        <add-employee :show-dialog="showDialog" />
+
+        <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
       </template>
     </page-tools>
     <el-card>
@@ -62,8 +63,9 @@ export default {
   },
   data() {
     return {
+
       // 弹框的判断展示
-      showDialog: true,
+      showDialog: false,
       // 接收数据
       list: [],
       page: {
