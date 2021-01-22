@@ -5,7 +5,7 @@
     <page-tools :show-before="true">
       <span slot="before">共 123 条记录</span>
       <template slot="after">
-        <el-button size="small" type="warning">导入</el-button>
+        <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
         <el-button size="small" type="danger">导出</el-button>
         <add-employee :show-dialog="showDialog" />
 
