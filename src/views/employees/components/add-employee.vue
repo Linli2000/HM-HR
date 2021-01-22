@@ -12,7 +12,14 @@
         <el-date-picker v-model="formData.timeOfEntry" style="width:50%" placeholder="请选择日期" />
       </el-form-item>
       <el-form-item label="聘用形式" prop="formOfEmployment">
-        <el-select v-model="formData.formOfEmployment" style="width:50%" placeholder="请选择" />
+        <el-select v-model="formData.formOfEmployment" style="width:50%" placeholder="请选择">
+          <el-option
+            v-for="item in EmployeesEnum.hireType"
+            :key="item.id"
+            :value="item.id"
+            :label="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="工号" prop="workNumber">
         <el-input v-model="formData.workNumber" style="width:50%" placeholder="请输入工号" />
@@ -46,6 +53,9 @@
 <script>
 import { getDepartments } from '@/api/departments'
 import { tranListToTreeData } from '@/utils'
+// 枚举
+import EmployeesEnum from '@/api/constant/employees'
+
 export default {
   props: {
     showDialog: {
@@ -55,6 +65,8 @@ export default {
   },
   data() {
     return {
+      EmployeesEnum,
+
       formData: {
         username: '',
         mobile: '',
