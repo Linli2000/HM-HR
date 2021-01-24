@@ -54,6 +54,7 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 // 引入封装的弹框
 import AddEmployee from './components/add-employee'
+import { formatDate } from '@/filters'
 
 export default {
   components: {
@@ -123,31 +124,127 @@ export default {
       this.getEmployeeList()
       this.showDialog = false
     },
-    exportExcel() {
-      const header = [
-        'id',
-        '姓名',
-        '年龄'
-      ]
-      // 以前一般的数据, 都是数组包裹对象
-      const students = [
-        { id: 1, name: '王大锤', age: 12 },
-        { id: 2, name: '陈翠花', age: 13 }
-      ]
-      // 这个插件需要的不是key:value声明的对象,
-      // 只需要按照顺序给出的 value 值组成数组即可
-      const data = [
-        [1, '王大锤', 12],
-        [2, '陈翠花', 13]
-      ]
+    async exportExcel() {
+      // 1. 监听按钮点击(完成)
+      // 2. 加载所有数据, 其实就是将 total 总条数设为每页长度, 加载第一页即可
+      const { rows } = await getEmployeeList({ page: 1, size: this.page.total })
+      // 3. 根据插件需要转换数据
+      // header / data
+      // 这两个都可以利用字典进行生成
+      const dict = {
+        '姓名': 'username',
+        '手机号': 'mobile',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // header 只需要将这个对象的key拿出来组成数组即可
+      const header = Object.keys(dict)
+      // 接着准备 data 也就是员工数组
+      // 我们本来已经有一个员工数组了
+      // console.log(rows)
+      // 之前的数据,是一个数组包裹各个员工对象
+      // 现在要将每个员工对象根据表头的顺序转换为数组,
+      // 再将所有转换好的员工组成一个新数组
+      // 使用映射, 将原来数组中的每个对象都映射成一个对应数组, 组成新结果 data
+      const data = rows.map(user => {
+        // 这里每个接到的都是 user 对象
+        // 需要转成数组, 可以封装函数, 传入员工对象和字典
+        // 需要返回一个合格的员工数组
+        return this.objToArray(user, dict)
+      })
 
+      // 4. 调用插件进行导出
       import('@/vendor/Export2Excel').then(excel => {
         excel.export_json_to_excel({
           // 配置对象
           header,
-          data
+          data,
+          filename: '员工信息表',
+          autoWidth: true
         })
       })
+      // console.log(data)
+
+      // 演示导出学生列表
+      // 需要两个必备数据
+      // 一个是表头
+      // 一个是数据本身
+      // const header = [
+      //   'id',
+      //   '姓名',
+      //   '年龄'
+      // ]
+      // 以前一般的数据, 都是数组包裹对象
+      // const students = [
+      //   { id: 1, name: '王大锤', age: 12 },
+      //   { id: 2, name: '陈翠花', age: 13 }
+      // ]
+      // 这个插件需要的不是key:value声明的对象,
+      // 只需要按照顺序给出的 value 值组成数组即可
+      // const data = [
+      //   [1, '王大锤', 12],
+      //   [2, '陈翠花', 13]
+      // ]
+
+      // import('@/vendor/Export2Excel').then(excel => {
+      //   excel.export_json_to_excel({
+      //     // 配置对象
+      //     header,
+      //     data
+      //   })
+      // })
+    },
+    objToArray(userObj, dict) {
+      // dict = {
+      //   姓名: 'username'
+      // }
+      // userObj = {
+      //   username:'tom'
+      // }
+      // // 根据headers 的顺序形成数组
+      // userArray = ['tom']
+      const header = Object.keys(dict)
+      const userArray = []
+
+      header.forEach(cnKey => {
+        const enKey = dict[cnKey]
+        // console.log(enKey)
+        let value = userObj[enKey]
+        // 之前转换数据直接推
+        // 其实有例外情况如时间数据和聘用形式
+        if (enKey === 'timeOfEntry' || enKey === 'correctionTime') {
+          // 时间处理
+          // 这个函数会将时间格式转成 yyyy-MM-dd
+          // 这个结果是一个字符串
+          // excel本身并不会将它所谓时间处理
+          // 可以在外面包裹一层 new Date 转成时间对象
+          value = new Date(formatDate(value))
+        }
+        if (enKey === 'formOfEmployment') {
+          // 聘用形式处理
+          // 聘用形式是 1 / 2 / 没有
+          const obj = EmployeeEnum.hireType.find(item => item.id === value)
+          value = obj ? obj.value : '未知'
+        }
+        // console.log(value)
+        userArray.push(value)
+      })
+      // for (const cnKey of header) {
+      //   // 第一个得到姓名
+      //   // 需要做的是, 从 userObj 里面找到姓名对应的值
+      //   // 但是userObj里面只有英文key, 先用字典转换
+      //   const enKey = dict[cnKey]
+      //   console.log(enKey)
+      //   const value = userObj[enKey]
+      //   console.log(value)
+      //   userArray.push(value)
+      // }
+      console.log(userObj)
+      console.log(userArray)
+      return userArray
     }
   }
 }
