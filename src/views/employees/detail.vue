@@ -18,8 +18,16 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情" />
-          <el-tab-pane label="岗位信息" />
+          <el-tab-pane label="个人详情">
+            <!-- 普通的写法 -->
+            <!-- <UserInfo /> -->
+            <!-- 还可以用一个通用的标签, component来显示动态的组件 -->
+            <!-- 其中它的 is 属性用字符串的形式绑定要显示的组件名即可 -->
+            <component :is="'UserInfo'" />
+          </el-tab-pane>
+          <el-tab-pane label="岗位信息">
+            <component :is="'JobInfo'" />
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
@@ -29,7 +37,13 @@
 <script>
 import { getUserDetailById } from '@/api/user'
 import { saveUserDetailById } from '@/api/employees'
+import UserInfo from './components/user-info'
+import JobInfo from './components/job-info'
 export default {
+  components: {
+    UserInfo,
+    JobInfo
+  },
   data() {
     return {
       userId: this.$route.params.id,
