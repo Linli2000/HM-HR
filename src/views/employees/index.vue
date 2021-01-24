@@ -5,8 +5,7 @@
       <span slot="before">共 123 条记录</span>
       <template slot="after">
         <el-button size="small" type="warning" @click="$router.push('/import?type=employee')">导入</el-button>
-        <el-button size="small" type="danger">导出</el-button>
-        <!--sync是接收子组件update这个方法改值不用写函数接收  -->
+        <el-button size="small" type="danger" @click="exportExcel">导出</el-button>        <!--sync是接收子组件update这个方法改值不用写函数接收  -->
         <add-employee :show-dialog.sync="showDialog" @addEmployee="addEmployee" />
         <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
       </template>
@@ -123,11 +122,36 @@ export default {
       // console.log('执行函数')
       this.getEmployeeList()
       this.showDialog = false
+    },
+    exportExcel() {
+      const header = [
+        'id',
+        '姓名',
+        '年龄'
+      ]
+      // 以前一般的数据, 都是数组包裹对象
+      const students = [
+        { id: 1, name: '王大锤', age: 12 },
+        { id: 2, name: '陈翠花', age: 13 }
+      ]
+      // 这个插件需要的不是key:value声明的对象,
+      // 只需要按照顺序给出的 value 值组成数组即可
+      const data = [
+        [1, '王大锤', 12],
+        [2, '陈翠花', 13]
+      ]
+
+      import('@/vendor/Export2Excel').then(excel => {
+        excel.export_json_to_excel({
+          // 配置对象
+          header,
+          data
+        })
+      })
     }
   }
 }
 </script>
-
 <style>
 
 </style>

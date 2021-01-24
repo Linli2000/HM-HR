@@ -30,16 +30,14 @@ export default {
         const userData = oldUserData.map(user => {
         // 这里就应该对员工对象进行处理返回结果
         // user 就是对象
-
-          // 我需要做的就是遍历这个对象的每一个属性, 将 key 转换成 英文以后组成一个新对象返回
-          // console.log(user)
-
+        // 我需要做的就是遍历这个对象的每一个属性, 将 key 转换成 英文以后组成一个新对象返回
+        // console.log(user)
           const newUser = {}
           for (const cnKey in user) {
-          // console.log(cnKey)
-          // console.log(user)
-          // 遍历员工对象里面的每个属性
-          // 1. 拿到英文key []拿到dict下面属性的每个值 .是拿单个特指的
+            // console.log(cnKey)
+            console.log(user)
+            // 遍历员工对象里面的每个属性
+            // 1. 拿到英文key []拿到dict下面属性的值 .是拿单个特指的
             const enKey = dict[cnKey]
             // 2. 拿到对应 value 值
             let value = user[cnKey]
@@ -52,7 +50,7 @@ export default {
           }
           return newUser
         })
-        console.log(userData)
+        // console.log(userData)
 
         // 转换完数据以后, 发送请求
         await importEmployee(userData)
