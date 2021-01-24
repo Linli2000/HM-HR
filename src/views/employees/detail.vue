@@ -6,11 +6,11 @@
           <el-tab-pane label="登录账户设置">
 
             <!-- 放置表单 -->
-            <el-form label-width="120px" style="margin-left: 120px; margin-top:30px">
-              <el-form-item label="姓名:">
+            <el-form ref="form" :model="userInfo" :rules="rules" label-width="120px" style="margin-left: 120px; margin-top:30px">
+              <el-form-item label="姓名:" prop="username">
                 <el-input v-model="userInfo.username" style="width:300px" />
               </el-form-item>
-              <el-form-item label="密码:">
+              <el-form-item label="密码:" prop="password2">
                 <el-input v-model="userInfo.password2" style="width:300px" type="password" />
               </el-form-item>
               <el-form-item>
@@ -41,6 +41,15 @@ export default {
         password2: ''
         // 之后发送时, 因为后台要求的字段名叫 password
         // 在发送前将 password = password2
+      },
+      rules: {
+        username: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
+        ],
+        password2: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 6, max: 9, message: '密码长度6-9位', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -52,7 +61,9 @@ export default {
       this.userInfo = await getUserDetailById(this.userId)
     },
     async saveUser() {
-      // 校验数据(下午)
+      // 校验数据
+      await this.$refs.form.validate()
+
       // 发送请求的时候, 将用户输入的 password2 放入 password 交给后台
       await saveUserDetailById({ ...this.userInfo, password: this.userInfo.password2 })
       // 提醒成功
