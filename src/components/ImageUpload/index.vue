@@ -38,9 +38,7 @@ export default {
       // 里面的每个元素都是图片对象
       // 可以先创建一张固定的图片做测试
       fileList: [
-        {
-          url: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2335596138,3700517441&fm=26&gp=0.jpg'
-        }
+
       ]
     }
   },
@@ -63,6 +61,23 @@ export default {
     },
     onRemove(file, fileList) {
       this.fileList = [...fileList]
+    },
+    beforeUpload(file) {
+      // 校验大小
+      const maxSize = 1 * 1024 * 1024
+      if (file.size > maxSize) {
+        this.$message.error('图片不能超过 1M 大小')
+        return false
+      }
+
+      // 校验类型
+      const types = ['image/jpeg', 'image/png']
+      if (types.indexOf(file.type) === -1) {
+        this.$message.error('只支持 jpge / png 格式')
+        return false
+      }
+
+      return true
     }
   }
 }
