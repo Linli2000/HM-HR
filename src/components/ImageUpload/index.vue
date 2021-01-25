@@ -1,15 +1,20 @@
 <template>
   <div>
     <!-- action 执行后端地址, 之后需要用腾讯云, 所以给一个 # 另外用 http-request 覆盖默认请求 -->
+    <!-- 当前上传组件需要知道有多少张图片, 如果已经有图片, 就不能再上传
+    我们需要用一个数组来管理这些图片 -->
     <el-upload
       action="#"
       :http-request="upload"
 
       list-type="picture-card"
+
+      :file-list="fileList"
       :on-preview="preview"
     >
       <i class="el-icon-plus" />
     </el-upload>
+
     <!-- 预览弹窗 -->
     <el-dialog title="预览" :visible.sync="showDialog">
       <el-row type="flex" justify="center">
@@ -24,7 +29,16 @@ export default {
   data() {
     return {
       showDialog: false,
-      previewUrl: ''
+      previewUrl: '',
+
+      // 这个 fileList 就是用来管理图片用的
+      // 里面的每个元素都是图片对象
+      // 可以先创建一张固定的图片做测试
+      fileList: [
+        {
+          url: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2335596138,3700517441&fm=26&gp=0.jpg'
+        }
+      ]
     }
   },
   methods: {
