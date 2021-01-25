@@ -49,7 +49,28 @@ export default {
   },
   methods: {
     upload() {
-
+      // 真的上传图片
+      // 真的上传图片
+      // 利用腾讯云的sdk 实例 cos
+      // 调用函数 cos.putObject(options, callback)
+      cos.putObject({
+        // 储存桶名字
+        Bucket: 'weiwei-1300310660',
+        // 地区
+        Region: 'ap-guangzhou',
+        // 上传后的文件名, 一般用文件名本身或者创建一个随机字符串即可
+        Key: 'exampleobject',
+        // 储存类型, 默认即可
+        StorageClass: 'STANDARD',
+        // 图片文件本身
+        Body: fileObject // 上传文件对象
+        // onProgress: function(progressData) {
+        //   console.log(JSON.stringify(progressData))
+        // }
+      }, function(err, data) {
+        // 回调函数, 接收两个数据 err 是错误, data 是结果
+        console.log(err || data)
+      })
     },
     // 预览函数
     preview(file) {
