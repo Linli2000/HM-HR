@@ -1,6 +1,7 @@
 // 该文件负责所有的公共的组件的全局注册   Vue.use
 import PageTools from './PageTools'
 import UploadExcel from '@/components/UploadExcel'
+import ImageUpload from '@/components/ImageUpload'
 
 export default {
   install(Vue) {
@@ -8,5 +9,7 @@ export default {
     Vue.component('PageTools', PageTools)
     // 注册导入excel组件
     Vue.component('UploadExcel', UploadExcel)
+    // 图片上传
+    Vue.component('ImageUpload', ImageUpload)
   }
 }
