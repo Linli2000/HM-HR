@@ -48,29 +48,34 @@ export default {
     }
   },
   methods: {
-    upload() {
+    upload(data) {
+      console.log(data)
       // 真的上传图片
-      // 真的上传图片
-      // 利用腾讯云的sdk 实例 cos
+      // 可以接受到当前上传组件的配置, 包括图片文件
+      if (data.file) {
+        // 利用腾讯云的sdk 实例 cos
       // 调用函数 cos.putObject(options, callback)
-      cos.putObject({
+        cos.putObject({
         // 储存桶名字
-        Bucket: 'weiwei-1300310660',
-        // 地区
-        Region: 'ap-guangzhou',
-        // 上传后的文件名, 一般用文件名本身或者创建一个随机字符串即可
-        Key: 'exampleobject',
-        // 储存类型, 默认即可
-        StorageClass: 'STANDARD',
-        // 图片文件本身
-        Body: fileObject // 上传文件对象
+          Bucket: 'weiwei-1300310660',
+          // 地区
+          Region: 'ap-guangzhou',
+          // 上传后的文件名, 一般用文件名本身或者创建一个随机字符串即可
+          // 因为对象储存, key 都是唯一的, 所以这里加上图片大小作为 key
+          // 可以避免上传同名文件造成的覆盖
+          Key: data.file.size + data.file.name,
+          // 储存类型, 默认即可
+          StorageClass: 'STANDARD',
+          // 图片文件本身
+          Body: data.file
         // onProgress: function(progressData) {
         //   console.log(JSON.stringify(progressData))
         // }
-      }, function(err, data) {
+        }, function(err, data) {
         // 回调函数, 接收两个数据 err 是错误, data 是结果
-        console.log(err || data)
-      })
+          console.log(err || data)
+        })
+      }
     },
     // 预览函数
     preview(file) {
