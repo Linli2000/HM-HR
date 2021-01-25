@@ -11,6 +11,9 @@
 
       :file-list="fileList"
       :on-preview="preview"
+      :class="{disabled: fileList.length >= 1}"
+      :on-change="onChange"
+      :on-remove="onRemove"
     >
       <i class="el-icon-plus" />
     </el-upload>
@@ -52,11 +55,27 @@ export default {
       this.previewUrl = file.url
       // 2. 弹窗
       this.showDialog = true
+    },
+    onChange(file, fileList) {
+      // 这里的第二个参数 fileList 就是最新的文件列表
+      // 只需要将这个值复制到 this.fileList
+      this.fileList = [...fileList]
+    },
+    onRemove(file, fileList) {
+      this.fileList = [...fileList]
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
+.disabled {
+  // scss 不支持 /deep/
+  // 需要换成对应的 ::v-deep
+  ::v-deep .el-upload--picture-card {
+    display: none;
+  }
+}
 </style>
+
