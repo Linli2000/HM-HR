@@ -28,6 +28,11 @@
 </template>
 
 <script>
+// 引入腾讯云sdk
+import COS from 'cos-js-sdk-v5'
+// 利用这个 sdk 创建一个工具实例
+import config from '@/private-config'
+const cos = new COS(config)
 export default {
   data() {
     return {
