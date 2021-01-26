@@ -13,6 +13,11 @@
     <el-card>
       <el-table border :data="list">
         <el-table-column label="序号" sortable="" type="index" />
+        <el-table-column label="头像">
+          <template slot-scope="{row}">
+            <img v-imgerror="require('@/assets/common/bigUserHeader.png')" class="avatar" :src="row.staffPhoto" alt="">
+          </template>
+        </el-table-column>
         <el-table-column label="姓名" sortable="" prop="username" />
         <el-table-column label="工号" sortable="" prop="workNumber" />
         <!-- 可以使用**el-table-column**的**formatter**属性进行设置 枚举 -->
@@ -248,6 +253,12 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
+.avatar {
+  width:100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
 </style>
