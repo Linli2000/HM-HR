@@ -34,6 +34,8 @@ for (const key in filters) {
 
 // 处理破图
 import '@/directives'
+import Print from 'vue-print-nb'
+Vue.use(Print)
 new Vue({
   el: '#app',
   router,
