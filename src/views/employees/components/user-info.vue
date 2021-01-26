@@ -59,7 +59,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <ImageUpload ref="staffPhoto" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +90,7 @@
         <!-- 员工照片 -->
 
         <el-form-item label="员工照片">
+          <ImageUpload ref="idPhoto" />
           <!-- 放置上传图片 -->
         </el-form-item>
         <el-form-item label="国家/地区">
@@ -365,6 +366,14 @@ export default {
   methods: {
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId) // 获取员工数据
+      console.log(this.formData)
+      if (this.formData.staffPhoto) {
+        this.$refs.idPhoto.fileList = [
+          {
+            url: this.formData.staffPhoto
+          }
+        ]
+      }
     },
     async savePersonal() {
       await updatePersonal({ ...this.formData, id: this.userId })
@@ -377,6 +386,15 @@ export default {
     },
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
+      // console.log(this.userInfo)
+      // 将 userInfo 的 staffPhoto 放入 子组件 fileList 当中即可显示
+      if (this.userInfo.staffPhoto) {
+        this.$refs.staffPhoto.fileList = [
+          {
+            url: this.userInfo.staffPhoto
+          }
+        ]
+      }
     }
   }
 }
