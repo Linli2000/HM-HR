@@ -370,18 +370,34 @@ export default {
       if (this.formData.staffPhoto) {
         this.$refs.idPhoto.fileList = [
           {
-            url: this.formData.staffPhoto
+            url: this.formData.staffPhoto,
+            upload: true
           }
         ]
       }
     },
     async savePersonal() {
-      await updatePersonal({ ...this.formData, id: this.userId })
+      const fileList = this.$refs.idPhoto.fileList
+      // 2. 校验所有文件均已上传完毕
+      if (fileList.some(item => !item.upload)) {
+        this.$message.warning('当前图片还未上传成功')
+        return
+      }
+      // 3. 发送数据时带上文件列表第一张的url
+      await updatePersonal({ ...this.formData, id: this.userId, staffPhoto: fileList && fileList.length > 0 ? fileList[0].url : '' })
       this.$message.success('保存成功')
     },
     async saveUser() {
     //  调用父组件
-      await saveUserDetailById(this.userInfo)
+      const fileList = this.$refs.staffPhoto.fileList
+      // 这里是获取上传组件的文件列表, 之前在封装的时候已经知道
+      // 如果图片的 upload === true 就是已经上传完毕
+      if (fileList.some(item => !item.upload)) {
+        this.$message.warning('当前图片还未上传成功')
+        return
+      }
+
+      await saveUserDetailById({ ...this.userInfo, staffPhoto: fileList && fileList.length > 0 ? fileList[0].url : '' })
       this.$message.success('保存成功')
     },
     async getUserDetailById() {
@@ -391,7 +407,8 @@ export default {
       if (this.userInfo.staffPhoto) {
         this.$refs.staffPhoto.fileList = [
           {
-            url: this.userInfo.staffPhoto
+            url: this.userInfo.staffPhoto,
+            upload: true
           }
         ]
       }
