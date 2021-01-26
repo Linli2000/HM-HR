@@ -120,7 +120,7 @@ export default {
     },
     beforeUpload(file) {
       // 校验大小
-      const maxSize = 1 * 1024 * 1024
+      const maxSize = 10 * 1024 * 1024
       if (file.size > maxSize) {
         this.$message.error('图片不能超过 1M 大小')
         return false
