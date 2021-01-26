@@ -15,7 +15,7 @@
         <el-table-column label="序号" sortable="" type="index" />
         <el-table-column label="头像">
           <template slot-scope="{row}">
-            <img v-imgerror="require('@/assets/common/bigUserHeader.png')" class="avatar" :src="row.staffPhoto" alt="">
+            <img v-imgerror="require('@/assets/common/bigUserHeader.png')" class="avatar" :src="row.staffPhoto" alt="" @click="showPopup(row.staffPhoto)">
           </template>
         </el-table-column>
         <el-table-column label="姓名" sortable="" prop="username" />
@@ -49,6 +49,12 @@
         <el-pagination layout="prev, pager, next" :total="page.total" @current-change="currentChange" />
       </el-row>
     </el-card>
+    <add-employee :show-dialog.sync="showDialog" @addEmployee="addEmployee" />
+    <el-dialog title="二维码" :visible.sync="showCodeDialog" @opened="showQRcode">
+      <el-row type="flex" justify="center">
+        <canvas v-if="showCodeDialog" ref="myCanvas" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,6 +65,7 @@ import EmployeeEnum from '@/api/constant/employees'
 // 引入封装的弹框
 import AddEmployee from './components/add-employee'
 import { formatDate } from '@/filters'
+import QRcode from 'qrcode'
 
 export default {
   components: {
@@ -66,7 +73,8 @@ export default {
   },
   data() {
     return {
-
+      avatarImg: '',
+      showCodeDialog: false,
       // 弹框的判断展示
       showDialog: false,
       // 接收数据
@@ -82,6 +90,17 @@ export default {
     this.getEmployeeList()
   },
   methods: {
+    showPopup(staffPhoto) {
+      if (staffPhoto) {
+        // 1. 将头像地址记录
+        this.avatarImg = staffPhoto
+        // 2. 弹窗
+        this.showCodeDialog = true
+      }
+    },
+    showQRcode() {
+      QRcode.toCanvas(this.$refs.myCanvas, this.avatarImg)
+    },
     // 获取原始数据
     async getEmployeeList() {
       // 结构数据
