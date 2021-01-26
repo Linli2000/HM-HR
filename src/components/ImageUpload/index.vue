@@ -42,9 +42,8 @@ export default {
       // 这个 fileList 就是用来管理图片用的
       // 里面的每个元素都是图片对象
       // 可以先创建一张固定的图片做测试
-      fileList: [
-
-      ]
+      fileList: [],
+      currentFileUid: ''
     }
   },
   methods: {
@@ -71,9 +70,26 @@ export default {
         // onProgress: function(progressData) {
         //   console.log(JSON.stringify(progressData))
         // }
-        }, function(err, data) {
+        }, (err, data) => {
         // 回调函数, 接收两个数据 err 是错误, data 是结果
           console.log(err || data)
+          // 之前记录了被上传的文件 uid
+          // 现在上传成功了 图片地址就在 data.Location 里面
+          // 在 fileList 当中找到上传的图片, 替换其中的 url
+          // (虽然现在只有一张,拿出来即可)
+          // this.fileList[0].url = 'http://' + data.Location
+          this.fileList = this.fileList.map(item => {
+            if (item.uid === this.currentFileUid) {
+              item.url = 'http://' + data.Location
+              // 笔记中嗨额外在这里多添加了一个属性
+              // 其实是为了标注当前图片是否是线上图片
+              // 之后用来修改用户数据的时候, 如果一张图片还没有上传成功
+              // 没有 upload = true 就会阻止修改
+              item.upload = true
+            }
+
+            return item
+          })
         })
       }
     },
@@ -107,6 +123,7 @@ export default {
         this.$message.error('只支持 jpge / png 格式')
         return false
       }
+      this.currentFileUid = file.uid
 
       return true
     }
