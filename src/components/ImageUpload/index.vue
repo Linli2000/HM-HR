@@ -17,7 +17,7 @@
     >
       <i class="el-icon-plus" />
     </el-upload>
-
+    <el-progress v-if="showProgress" :percentage="percentage" style="width:180px" />
     <!-- 预览弹窗 -->
     <el-dialog title="预览" :visible.sync="showDialog">
       <el-row type="flex" justify="center">
@@ -43,7 +43,9 @@ export default {
       // 里面的每个元素都是图片对象
       // 可以先创建一张固定的图片做测试
       fileList: [],
-      currentFileUid: ''
+      currentFileUid: '',
+      percentage: 0,
+      showProgress: false
     }
   },
   methods: {
@@ -66,7 +68,10 @@ export default {
           // 储存类型, 默认即可
           StorageClass: 'STANDARD',
           // 图片文件本身
-          Body: data.file
+          Body: data.file,
+          onProgress: (progressData) => {
+            this.percentage = Math.floor(progressData.percent * 100)
+          }
         // onProgress: function(progressData) {
         //   console.log(JSON.stringify(progressData))
         // }
@@ -90,6 +95,10 @@ export default {
 
             return item
           })
+          setTimeout(() => {
+            this.showProgress = false
+            this.percentage = 0
+          }, 1000)
         })
       }
     },
@@ -124,7 +133,8 @@ export default {
         return false
       }
       this.currentFileUid = file.uid
-
+      // 上传之前将进度条显示出来
+      this.showProgress = true
       return true
     }
   }
