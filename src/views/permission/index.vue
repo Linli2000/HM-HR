@@ -8,7 +8,7 @@
         </template>
       </page-tools>
       <!-- 表格 -->
-      <el-table :data="list" border="" row-key="id">
+      <el-table :data="list" border="" row-key="id" :default-expand-all="true">
         <el-table-column label="名称" prop="name" />
         <el-table-column label="标识" prop="code" />
         <el-table-column label="描述" prop="description" />
