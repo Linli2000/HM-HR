@@ -119,7 +119,19 @@ export default {
       // 3. 关闭弹窗
       this.showDialog = false
     },
-    btnCancel() {},
+    btnCancel() {
+      // 1. 清理 formData
+      this.formData = {
+        name: '',
+        code: '',
+        description: '',
+        enVisible: ''
+      }
+      // 2. 清理校验错误
+      this.$refs.perForm.resetFields()
+      // 3. 关闭
+      this.showDialog = false
+    },
     async delPermission(id) {
       // 1. 发送请求
       await delPermission(id)
