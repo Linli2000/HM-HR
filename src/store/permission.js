@@ -9,7 +9,7 @@ const mutations = {
     state.routes = [...constantRoutes, ...newRoutes]
   }
 }
-const actions = { filterRoutes(context, roles) {
+const actions = { filterRoutes({ commit }, roles) {
   // 第一种思路
   // 筛选路由的逻辑是, 拿到所有的动态路由配置
   // 遍历
@@ -39,6 +39,10 @@ const actions = { filterRoutes(context, roles) {
   //   routes.push(...asyncRoutes.filter(item => item.name === key))
   // })
   // console.log(routes)
+
+  // 这个actions 的最后得出的 routes 是当前用户有权限使用的动态路由配置
+  // 需要调用 mutations 跟之前的静态路由合并, 存在 state 当中, 就是所有我可以访问的路由了
+  commit('setRoutes', routes)
 } }
 
 export default {
