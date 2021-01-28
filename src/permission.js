@@ -31,7 +31,7 @@ router.beforeEach(async(to, from, next) => {
         const routes = await store.dispatch('permission/filterRoutes', roles)
         // 除了解决菜单问题, 这里呢还需要拿到筛选后的路由数据
         // 将有权限的路由配置添加到当前 router 路由实例配置中
-        router.addRoutes(routes)
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])
         next(to.path)
       } else {
         next()

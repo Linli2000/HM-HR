@@ -63,9 +63,9 @@ export const constantRoutes = [
       path: '', // 二级路由path什么都不写 表示二级默认路由
       component: () => import('@/views/import')
     }]
-  },
+  }
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 // 引入多个模块的规则
