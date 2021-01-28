@@ -323,7 +323,8 @@ export default {
       this.$message.success('分配权限成功')
 
       // 关闭前清空数据
-      this.$refs.permTree.setCheckedKeys([])
+      // this.$refs.permTree.setCheckedKeys([])
+      this.selectCheck = []
 
       this.showPermDialog = false
     },
