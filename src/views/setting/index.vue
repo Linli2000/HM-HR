@@ -141,7 +141,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getCompanyInfo, getRoleList, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/setting'
+import { getCompanyInfo, getRoleList, deleteRole, getRoleDetail, updateRole, addRole, assignPerm } from '@/api/setting'
 import { getPermissionList } from '@/api/permission'
 import { tranListToTreeData } from '@/utils'
 export default {
@@ -184,7 +184,8 @@ export default {
       defaultProps: {
         label: 'name'
       },
-      selectCheck: []
+      selectCheck: [],
+      roleId: ''
     }
   },
   computed: {
@@ -298,11 +299,34 @@ export default {
       // 树形组件的回显有固定写法
       // 指定每个节点唯一的key是哪一个? id
       // 指定默认选中的节点key 数组
+      console.log('当前用户的权限id数组')
+      console.log(permIds)
       this.selectCheck = permIds
       // 2. 弹出弹窗
       this.showPermDialog = true
+      // 后面点击确认的时候, 需要拿到当前正在编辑的角色id
+      // 所以这里先把 id 存起来
+      this.roleId = id
     },
-    btnPermOK() {},
+    async btnPermOK() {
+      // 这里是给角色分配权限
+      // 只需要带上两个参数
+      // 1. 当前角色 id
+      const id = this.roleId
+      // 2. 想要分配权限id组成的数组
+      const permIds = this.$refs.permTree.getCheckedKeys()
+      await assignPerm({
+        id,
+        permIds
+      })
+
+      this.$message.success('分配权限成功')
+
+      // 关闭前清空数据
+      this.$refs.permTree.setCheckedKeys([])
+
+      this.showPermDialog = false
+    },
     btnPermCancel() {}
   }
 }
