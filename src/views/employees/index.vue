@@ -7,7 +7,7 @@
         <el-button size="small" type="warning" @click="$router.push('/import?type=employee')">导入</el-button>
         <el-button size="small" type="danger" @click="exportExcel">导出</el-button>        <!--sync是接收子组件update这个方法改值不用写函数接收  -->
         <add-employee :show-dialog.sync="showDialog" @addEmployee="addEmployee" />
-        <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
+        <el-button size="small" type="primary" :disabled="!checkPerission('POINT-USER-ADD')" @click="showDialog = true">新增员工</el-button>
       </template>
     </page-tools>
     <el-card>
@@ -90,6 +90,13 @@ export default {
     this.getEmployeeList()
   },
   methods: {
+    checkPerission(key) {
+      // 这个函数接收一个想要查询的权限 key
+      // 然后遍历用户数据中 roles.points
+      // 如果 key 存在于 points 那么返回 true 否则 false
+      const { roles } = this.$store.state.user.userInfo
+      return roles.points.indexOf(key) > -1
+    },
     showPopup(staffPhoto) {
       if (staffPhoto) {
         // 1. 将头像地址记录
