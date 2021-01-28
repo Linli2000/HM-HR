@@ -4,7 +4,7 @@
       <!-- 靠右的按钮 -->
       <page-tools>
         <template v-slot:after>
-          <el-button type="primary" size="small">添加权限</el-button>
+          <el-button type="primary" size="small" @click="addPermission('0', 1)">添加权限</el-button>
         </template>
       </page-tools>
       <!-- 表格 -->
@@ -100,6 +100,11 @@ export default {
       await delPermission(id)
       // 2. 刷新数据
       this.getPermissionList()
+    },
+    addPermission(pid, type) {
+      this.formData.pid = pid
+      this.formData.type = type
+      this.showDialog = true
     }
   }
 }
