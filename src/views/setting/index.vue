@@ -327,7 +327,10 @@ export default {
 
       this.showPermDialog = false
     },
-    btnPermCancel() {}
+    btnPermCancel() {
+      this.selectCheck = []
+      this.showPermDialog = false
+    }
   }
 }
 </script>
