@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getPermissionList, delPermission } from '@/api/permisson'
+import { getPermissionList, delPermission, addPermission } from '@/api/permisson'
 import { tranListToTreeData } from '@/utils'
 export default {
   data() {
@@ -93,7 +93,25 @@ export default {
       // pid 默认是 "0" 跟组织架构稍有不同
       this.list = tranListToTreeData(data, '0')
     },
-    btnOK() {},
+    async btnOK() {
+      // 新增权限点
+      // 0. 校验表单
+      await this.$refs.perForm.validate()
+      // 1. 发请求带上 this.formData
+      await addPermission(this.formData)
+      // 2. 更新页面
+      await this.getPermissionList()
+      // 3. 成功后清理表单数据 + 弹窗提示
+      this.formData = {
+        name: '',
+        code: '',
+        description: '',
+        enVisible: ''
+      }
+      this.$message.success('操作成功')
+      // 3. 关闭弹窗
+      this.showDialog = false
+    },
     btnCancel() {},
     async delPermission(id) {
       // 1. 发送请求
