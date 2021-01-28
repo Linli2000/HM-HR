@@ -1,6 +1,7 @@
 import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth.js'
 
 import { getUserDetailById, getUserInfo, login } from '@/api/user.js'
+import { resetRouter } from '@/router'
 const state = {
   // 页面刷新获取默认值,如果没有则为空
   token: getToken(),
@@ -59,6 +60,13 @@ const actions = {
     commit('removeToken')
     // 清理用户数据
     commit('removeUserInfo')
+    // 登出时需要清理路由数据
+    // router实例重置
+    resetRouter()
+    // vuex permission 模块里面的 state 应该重置
+    // 这里需要调用兄弟模块的mutation, commit时
+    // 多添加一个参数作为配置对象, 里面添加属性 root: true
+    commit('permission/setRoutes', [], { root: true })
   }
 }
 
