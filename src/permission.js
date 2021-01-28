@@ -1,6 +1,5 @@
 // 这里需要一个路由守卫, 控制页面的访问权限
 import router from '@/router'
-import { asyncRoutes } from '@/router'
 // 引入 vuex 实例, 查看数据
 import store from '@/store'
 // 引入一份进度条插件
@@ -29,9 +28,14 @@ router.beforeEach(async(to, from, next) => {
         // 除了触发获取信息 action 内部会存入 vuex 以外
         // 还需要返回出来, 这里准备进行路由的筛选
         const { roles } = await store.dispatch('user/getUserInfo')
-        await store.dispatch('permission/filterRoutes', roles)
+        const routes = await store.dispatch('permission/filterRoutes', roles)
+        // 除了解决菜单问题, 这里呢还需要拿到筛选后的路由数据
+        // 将有权限的路由配置添加到当前 router 路由实例配置中
+        router.addRoutes(routes)
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
   } else {
     // 没 token ?

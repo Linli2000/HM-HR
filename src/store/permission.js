@@ -43,6 +43,9 @@ const actions = { filterRoutes({ commit }, roles) {
   // 这个actions 的最后得出的 routes 是当前用户有权限使用的动态路由配置
   // 需要调用 mutations 跟之前的静态路由合并, 存在 state 当中, 就是所有我可以访问的路由了
   commit('setRoutes', routes)
+  // 假如外面调用这个 action 时希望可以拿到结果
+  // 这里应该 return
+  return routes
 } }
 
 export default {
