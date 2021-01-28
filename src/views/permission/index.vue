@@ -54,13 +54,13 @@
 </template>
 
 <script>
-import { getPermissionList } from '@/api/permisson'
+import { getPermissionList, delPermission } from '@/api/permisson'
 import { tranListToTreeData } from '@/utils'
 export default {
   data() {
     return {
       list: [],
-      showDialog: true,
+      showDialog: false,
       formData: {
         name: '',
         code: '',
@@ -94,7 +94,13 @@ export default {
       this.list = tranListToTreeData(data, '0')
     },
     btnOK() {},
-    btnCancel() {}
+    btnCancel() {},
+    async delPermission(id) {
+      // 1. 发送请求
+      await delPermission(id)
+      // 2. 刷新数据
+      this.getPermissionList()
+    }
   }
 }
 </script>
