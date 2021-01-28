@@ -113,15 +113,20 @@
       <!-- check-strictly 如果为true 那表示父子勾选时  不互相关联 如果为false就互相关联 -->
       <!-- id作为唯一标识 -->
       <!-- <el-tree
+
+        :default-checked-keys="selectCheck"
+
+      /> -->
+      <el-tree
         ref="permTree"
         :data="permData"
         :props="defaultProps"
-        :show-checkbox="true"
-        :check-strictly="true"
+
         :default-expand-all="true"
-        :default-checked-keys="selectCheck"
+        :show-checkbox="true"
         node-key="id"
-      /> -->
+        :check-strictly="true"
+      />
       <!-- 确定 取消 -->
       <el-row slot="footer" type="flex" justify="center">
         <el-col :span="6">
@@ -173,7 +178,11 @@ export default {
         total: 0
       },
 
-      permData: []
+      permData: [],
+
+      defaultProps: {
+        label: 'name'
+      }
     }
   },
   computed: {
