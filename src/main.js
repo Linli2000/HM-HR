@@ -36,6 +36,10 @@ for (const key in filters) {
 import '@/directives'
 import Print from 'vue-print-nb'
 Vue.use(Print)
+// 全局混入
+import checkPermission from '@/mixin/checkPermission'
+Vue.mixin(checkPermission)
+
 new Vue({
   el: '#app',
   router,
