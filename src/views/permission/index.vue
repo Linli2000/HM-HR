@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getPermissionList, delPermission, addPermission } from '@/api/permisson'
+import { getPermissionList, delPermission, addPermission, getPermissionDetail, updatePermission } from '@/api/permisson'
 import { tranListToTreeData } from '@/utils'
 export default {
   data() {
@@ -98,7 +98,14 @@ export default {
       // 0. 校验表单
       await this.$refs.perForm.validate()
       // 1. 发请求带上 this.formData
-      await addPermission(this.formData)
+      if (this.formData.id) {
+        // 编辑
+        await updatePermission(this.formData)
+      } else {
+        // 新增
+        // 1. 发请求带上 this.formData
+        await addPermission(this.formData)
+      }
       // 2. 更新页面
       await this.getPermissionList()
       // 3. 成功后清理表单数据 + 弹窗提示
@@ -122,6 +129,14 @@ export default {
     addPermission(pid, type) {
       this.formData.pid = pid
       this.formData.type = type
+      this.showDialog = true
+    },
+    async editPermission(id) {
+      // 1. 获取点击的那个权限点旧数据, 放入 formData 回显
+      const data = await getPermissionDetail(id)
+      console.log(data)
+      this.formData = data
+      // 2. 弹出弹窗
       this.showDialog = true
     }
   }
