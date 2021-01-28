@@ -126,6 +126,7 @@
         :show-checkbox="true"
         node-key="id"
         :check-strictly="true"
+        :default-checked-keys="selectCheck"
       />
       <!-- 确定 取消 -->
       <el-row slot="footer" type="flex" justify="center">
@@ -182,7 +183,8 @@ export default {
 
       defaultProps: {
         label: 'name'
-      }
+      },
+      selectCheck: []
     }
   },
   computed: {
@@ -290,6 +292,13 @@ export default {
       console.log(data)
       console.log(this.permData)
       // 1.2 回显当前角色的权限
+      const { permIds } = await getRoleDetail(id)
+      // 这里拿到了角色数据, 其中当前角色拥有的权限在 permIds
+      // 需要树形组件进行勾选的回显
+      // 树形组件的回显有固定写法
+      // 指定每个节点唯一的key是哪一个? id
+      // 指定默认选中的节点key 数组
+      this.selectCheck = permIds
       // 2. 弹出弹窗
       this.showPermDialog = true
     },
