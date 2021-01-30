@@ -5,11 +5,11 @@
       <div>
         <div class="fl headL">
           <div class="headImg">
-            <img src="@/assets/common/head.jpg">
+            <img v-imgerror="require('@/assets/common/bigUserHeader.png')" :src="staffPhoto">
           </div>
           <div class="headInfoTip">
-            <p class="firstChild">早安，管理员，祝你开心每一天！</p>
-            <p class="lastChild">早安，管理员，祝你开心每一天！</p>
+            <p class="firstChild">早安，{{ name }}</p>
+            <p class="lastChild">祝你开心每一天！</p>
           </div>
         </div>
         <div class="fr" />
@@ -83,7 +83,8 @@
           <div slot="header" class="header">
             <span>绩效指数</span>
           </div>
-        <!-- 放置雷达图 -->
+          <!-- 放置雷达图 -->
+          <Radar />
         </el-card>
         <!-- 帮助连接 -->
         <el-card class="box-card">
@@ -120,13 +121,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Radar from './components/radar'
 
 export default {
   name: 'Dashboard',
+  components: {
+    Radar
+  },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapGetters(['name', 'staffPhoto'])
   }
 }
 </script>
