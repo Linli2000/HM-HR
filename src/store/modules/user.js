@@ -1,9 +1,8 @@
-import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth.js'
-
-import { getUserDetailById, getUserInfo, login } from '@/api/user.js'
+import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth'
+import { login, getUserInfo, getUserDetailById } from '@/api/user'
 import { resetRouter } from '@/router'
 const state = {
-  // 页面刷新获取默认值,如果没有则为空
+  // 2. 页面刷新初始化时, 尝试恢复
   token: getToken(),
   userInfo: {}
 }
@@ -14,21 +13,18 @@ const mutations = {
     // 但是没有持久化
     // 持久化的两个步骤
     // 1. 数据发生变化时, 存放起来
-    state.token = data
-    // 2.数据变化时存放到本地存储
     setToken(data)
+
+    state.token = data
   },
   removeToken(state) {
-    // 删除token信息
     state.token = ''
     removeToken()
   },
   setUserInfo(state, data) {
-    // 存储用户信息
     state.userInfo = { ...data }
   },
   removeUserInfo(state) {
-    // 删除用户信息
     state.userInfo = {}
   }
 }
@@ -36,23 +32,40 @@ const mutations = {
 const actions = {
   async login({ commit }, data) {
     const res = await login(data)
+    // res.data.data 就是 token
+    console.log('将登录页的逻辑移动到 vuex 里面')
     commit('setToken', res)
     setTimeStamp()
   },
+  // login({ commit }, data) {
+  //   login(data).then(res => {
+  //     if (!res.data.success) {
+  //       alert('用户名或密码错误')
+  //     } else {
+  //       console.log('将登录页的逻辑移动到 vuex 里面')
+  //       commit('setToken', res.data.data)
+  //     }
+  //     // 这里需要处理连接本身没有问题, 但是用户数据出错的情况
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  // res.data.data 就是 token
+  // }
   async getUserInfo({ commit }) {
     const simpleInfo = await getUserInfo()
     // 上一个接口问题在于数据太过简陋, 缺少了图片
     // 唯一的好处就是带有用户 id
     // 接下来需要利用这个id继续获取当前用户的其他资料
     const detailInfo = await getUserDetailById(simpleInfo.userId)
-    // 将两个接口结果合并
+
     const totalInfo = {
       ...simpleInfo,
       ...detailInfo
     }
+
+    commit('setUserInfo', totalInfo)
     // 作为数据的获取来说, 上面两部已经完成了
     // 这里有一个后面会用到的数据返回
-    commit('setUserInfo', totalInfo)
     return totalInfo
   },
   logout({ commit }) {

@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getPermissionList, delPermission, addPermission, getPermissionDetail, updatePermission } from '@/api/permisson'
+import { getPermissionList, delPermission, addPermission, getPermissionDetail, updatePermission } from '@/api/permission'
 import { tranListToTreeData } from '@/utils'
 export default {
   data() {

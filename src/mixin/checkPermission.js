@@ -10,4 +10,5 @@ export default {
       const { roles } = store.state.user.userInfo
       return roles.points.indexOf(key) > -1
     }
+  }
 }
